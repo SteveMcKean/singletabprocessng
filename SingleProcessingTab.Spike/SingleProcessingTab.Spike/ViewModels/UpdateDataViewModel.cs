@@ -7,6 +7,8 @@ public class UpdateDataViewModel : BindableBase
 {
     private UpdateData data;
 
+    public string Item { get; set; }
+    
     public UpdateData UpdateData
     {
         get => data;
