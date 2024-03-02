@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Prism.Unity" Version="8.1.97" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\SingleProcessigTab.Modules.Safety\SingleProcessingTab.Modules.Safety.csproj" />
+    <ProjectReference Include="..\..\SingleProcessingTab.Modules.Levels\SingleProcessingTab.Modules.Levels.csproj" />
+    <ProjectReference Include="..\..\SingleProcessingTab.Modules.Lifts\SingleProcessingTab.Modules.Lifts.csproj" />
+    <ProjectReference Include="..\SingleProcessingTab.Spike.Core\SingleProcessingTab.Spike.Core.csproj" />
+    <ProjectReference Include="..\Modules\SingleProcessingTab.Spike.Modules.ModuleName\SingleProcessingTab.Spike.Modules.ModuleName.csproj" />
+    <ProjectReference Include="..\Services\SingleProcessingTab.Spike.Services.Interfaces\SingleProcessingTab.Spike.Services.Interfaces.csproj" />
+    <ProjectReference Include="..\Services\SingleProcessingTab.Spike.Services\SingleProcessingTab.Spike.Services.csproj" />
+  </ItemGroup>
+</Project>
