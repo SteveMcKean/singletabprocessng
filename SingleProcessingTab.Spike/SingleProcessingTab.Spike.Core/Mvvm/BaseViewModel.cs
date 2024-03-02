@@ -26,22 +26,20 @@ public abstract class BaseViewModel<T, TLevel> : BindableBase, IActiveAware wher
 
     public event EventHandler IsActiveChanged = delegate { };
 
+
     protected BaseViewModel(IRegionManager regionManager, IUpdateService<T, TLevel> updateService)
     {
         this.regionManager = regionManager;
         this.UpdateService = updateService;
 
+        var dispatcherSynchronizationContext = new DispatcherSynchronizationContext();
         updateService.UiDataObservable
-            .ObserveOn(new DispatcherSynchronizationContext())
+            .ObserveOn(dispatcherSynchronizationContext)
             .Subscribe(Observer.Create<T>(OnDataReceived));
             
-        updateService.ProcessingObservable.Subscribe(OnProcessingStateChanged);
-
-    }
-
-    protected BaseViewModel(IRegionManager regionManager)
-    {
-        this.regionManager = regionManager;
+        updateService.ProcessingObservable
+            .ObserveOn(dispatcherSynchronizationContext)
+            .Subscribe(OnProcessingStateChanged);
 
     }
 

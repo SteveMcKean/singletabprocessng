@@ -21,7 +21,9 @@ namespace SingleProcessingTab.Spike.Services
     
         // Expose observables for external components to subscribe to
         public IObservable<bool> ProcessingObservable => processingSubject;
+
         public IObservable<T> UiDataObservable => uiDataSubject;
+
 
         public void StartProcessing()
         {

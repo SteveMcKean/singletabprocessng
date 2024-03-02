@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using Prism.Events;
 using Prism.Mvvm;
 using SingleProcessingTab.Spike.Core;
@@ -9,10 +10,10 @@ namespace SingleProcessingTab.Spike.ViewModels
     public class MainWindowViewModel : BindableBase
     {
         private string title = "Prism Application";
-        private ObservableCollection<UpdateData> moduleData;
-        private UpdateData levelsData;
-        private UpdateData liftsData;
-        private UpdateData safetyData;
+
+        private UpdateDataViewModel levelsData;
+        private UpdateDataViewModel liftsData;
+        private UpdateDataViewModel safetyData;
 
         public string Title
         {
@@ -21,28 +22,21 @@ namespace SingleProcessingTab.Spike.ViewModels
             
         }
 
-        public ObservableCollection<UpdateData> ModuleData
-        {
-            get => moduleData;
-            set => SetProperty(ref moduleData, value);
-            
-        }
-
-        public UpdateData LevelsData
+        public UpdateDataViewModel LevelsData
         {
             get => levelsData;
             set => SetProperty(ref levelsData, value);
 
         }
 
-        public UpdateData LiftsData
+        public UpdateDataViewModel LiftsData
         {
             get => liftsData;
             set => SetProperty(ref liftsData, value);
 
         }
 
-        public UpdateData SafetyData
+        public UpdateDataViewModel SafetyData
         {
             get => safetyData;
             set => SetProperty(ref safetyData, value);
@@ -51,15 +45,25 @@ namespace SingleProcessingTab.Spike.ViewModels
 
         public MainWindowViewModel(IEventAggregator eventAggregator)
         {
-            ModuleData = new ObservableCollection<UpdateData>();
             eventAggregator.GetEvent<ModuleDataPublishedEvent>().Subscribe(d =>
                 {
                     if(d is { Level.Id: 1 })
-                        LevelsData = d;
+                        LevelsData = new UpdateDataViewModel(d);
                     else if (d is { Level.Id: 2})
-                        LiftsData = d;
+                        LiftsData = new UpdateDataViewModel(d);
                     else if (d is { Level.Id: 3})
-                        SafetyData = d;
+                        SafetyData = new UpdateDataViewModel(d);
+                    
+                }, ThreadOption.UIThread);
+
+            eventAggregator.GetEvent<ResetModuleDataPublishedEvent>().Subscribe(d =>
+                {
+                    if (d is { Level.Id: 1 })
+                        LevelsData = new UpdateDataViewModel(d);
+                    else if (d is { Level.Id: 2 })
+                        LiftsData = new UpdateDataViewModel(d);
+                    else if (d is { Level.Id: 3 })
+                        SafetyData = new UpdateDataViewModel(d);
 
                 }, ThreadOption.UIThread);
 

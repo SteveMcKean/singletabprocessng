@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using Prism;
-using Prism.Commands;
+﻿using System.Diagnostics;
 using Prism.Events;
 using Prism.Regions;
 using SingleProcessingTab.Spike.Core;
@@ -11,83 +8,52 @@ using SingleProcessingTab.Spike.Services.Interfaces;
 
 namespace SingleProcessingTab.Modules.Lifts.ViewModels
 {
-    public class LiftsViewModel : RegionViewModelBase, IActiveAware
+    public class LiftsViewModel : BaseViewModel<UpdateData, Level>
     {
-        private readonly IUpdateService<UpdateData, Level> updateService;
-        private string message;
+        private readonly IEventAggregator eventAggregator;
         private UpdateData localData;
-        private bool isActive;
-
-
-        
-        public bool IsActive
-        {
-            get => isActive;
-            set => SetProperty(ref isActive, value, OnIsActiveChanged);
-            
-        }
-        
-        public event EventHandler IsActiveChanged = delegate{};
-        
-
-        public string Message
-        {
-            get => message;
-            set => SetProperty(ref message, value);
-            
-        }
 
         public string TabHeaderText { get; set; } = "Lifts";
+
+        public string Message { get; set; } = "Lifts View Selected";
 
         public UpdateData LocalData
         {
             get => localData;
             set => SetProperty(ref localData, value);
-            
+
         }
 
-        public DelegateCommand StartProcessingCommand { get; set; }
-        public DelegateCommand PauseProcessingCommand { get; set; }
-        
-        public LiftsViewModel(IRegionManager regionManager, IEventAggregator eventAggregator, 
-            IUpdateService<UpdateData, Level> updateService):base(regionManager)
+        public LiftsViewModel(IRegionManager regionManager, IUpdateService<UpdateData, Level> updateService, IEventAggregator eventAggregator)
+            : base(regionManager, updateService)
         {
-            this.updateService = updateService;
-
-            updateService.UiDataObservable.Subscribe(data =>
-                {
-                    LocalData = data;
-                    eventAggregator.GetEvent<ModuleDataPublishedEvent>().Publish(LocalData);
-                    
-                });
-
-            updateService.ProcessingObservable.Subscribe(x => Trace.WriteLine(x));
-            Message = "Lifts View";
+            this.eventAggregator = eventAggregator;
 
         }
 
-        public override void OnNavigatedTo(NavigationContext navigationContext)
+        protected override void OnDataReceived(UpdateData data)
         {
-            updateService.StartProcessing();
-            
+            if (data is null)
+                return;
+
+            LocalData = data;
+            var updatedData = new UpdateData(data.Level, data.Value, IsActive);
+
+            eventAggregator.GetEvent<ModuleDataPublishedEvent>().Publish(updatedData);
+
         }
 
-        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        protected override void OnProcessingStateChanged(bool isProcessing)
         {
-            updateService.PauseProcessing();
-            
+            if (!isProcessing && LocalData is not null)
+            {
+                var updatedData = new UpdateData(localData.Level, localData.Value, false);
+                eventAggregator.GetEvent<ResetModuleDataPublishedEvent>().Publish(updatedData);
+
+            }
+
+            Trace.WriteLine($"Processing for {LocalData?.Level.Id} is {isProcessing}");
+
         }
-
-        private void OnIsActiveChanged()
-        {
-            if (IsActive)
-                updateService.StartProcessing();
-            else
-                updateService.PauseProcessing();
-
-            IsActiveChanged?.Invoke(this, EventArgs.Empty);
-            
-        }
-
     }
 }

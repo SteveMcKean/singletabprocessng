@@ -7,13 +7,14 @@
     Title="{Binding Title}"
     Width="1100"
     Height="800"
-    FontSize="17"
-    prism:ViewModelLocator.AutoWireViewModel="True">
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    FontSize="17">
 
     <Window.Resources>
         <Style TargetType="TabItem">
             <Setter Property="Header" Value="{Binding Content.DataContext.TabHeaderText, RelativeSource={RelativeSource Self}}" />
         </Style>
+
     </Window.Resources>
 
     <Grid>
@@ -27,28 +28,71 @@
         <TabControl prism:RegionManager.RegionName="{x:Static core:RegionNames.ContentRegion}" />
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="250" />
+                <ColumnDefinition Width="250" />
+                <ColumnDefinition Width="250" />
+                <ColumnDefinition Width="250" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock
-                Grid.Column="0"
-                Margin="4"
-                Text="{Binding LevelsData}" />
-            <TextBlock
-                Grid.Column="1"
-                Margin="4"
-                Text="{Binding LiftsData}" />
-            <TextBlock
-                Grid.Column="2"
-                Margin="4"
-                Text="{Binding SafetyData}" />
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding LevelsData.IsActive}" Value="True">
+                                <Setter Property="Background" Value="LightBlue" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+
+                <TextBlock Margin="4" Text="{Binding LevelsData.LevelId}" />
+                <TextBlock Margin="4" Text="{Binding LevelsData.Value}" />
+                <CheckBox Margin="4" IsChecked="{Binding LevelsData.IsActive, UpdateSourceTrigger=PropertyChanged}" />
+
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding LiftsData.IsActive}" Value="True">
+                                <Setter Property="Background" Value="LightBlue" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+
+                <TextBlock Margin="4" Text="{Binding LiftsData.LevelId}" />
+                <TextBlock Margin="4" Text="{Binding LiftsData.Value}" />
+                <CheckBox Margin="4" IsChecked="{Binding LiftsData.IsActive, UpdateSourceTrigger=PropertyChanged}" />
+
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SafetyData.IsActive}" Value="True">
+                                <Setter Property="Background" Value="LightBlue" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+
+                <TextBlock Margin="4" Text="{Binding SafetyData.LevelId}" />
+                <TextBlock Margin="4" Text="{Binding SafetyData.Value}" />
+                <CheckBox Margin="4" IsChecked="{Binding SafetyData.IsActive, UpdateSourceTrigger=PropertyChanged}" />
+
+            </StackPanel>
             <TextBlock
                 Grid.Column="3"
                 Margin="4"
-                Text="{Binding BotsData}" />
+                Text="{Binding BotsData.Level.Id}" />
+
         </Grid>
+
     </Grid>
 </Window>
