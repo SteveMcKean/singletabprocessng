@@ -60,6 +60,11 @@ namespace SingleProcessingTab.Spike.Services
             processingSubject.OnNext(false);
 
         }
+
+        private void Dispose(bool isDisposing)
+        {
+            
+        }
     }
 
 }
