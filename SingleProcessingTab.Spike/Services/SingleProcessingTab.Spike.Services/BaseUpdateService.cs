@@ -51,7 +51,7 @@ namespace SingleProcessingTab.Spike.Services
 
         }
 
-        // Method to pause processing, updated comment. New comment
+        // Method to pause processing, updated comment. New comment, and again
         public void PauseProcessing()
         {
             cancellationTokenSource.Cancel();
